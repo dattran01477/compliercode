@@ -9,10 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.itcode.itcodeweb.data.ComplierEnum;
-import com.itcode.itcodeweb.docker.DockerSandboxService;
 import com.itcode.itcodeweb.model.app.Code;
 import com.itcode.itcodeweb.model.app.CodeSubmit;
 import com.itcode.itcodeweb.model.app.TestCase;
+import com.itcode.itcodeweb.service.docker.DockerSandboxService;
 import com.itcode.itcodeweb.service.excute.JavaScriptExecuteService;
 
 @SpringBootTest
@@ -21,11 +21,7 @@ public class JavaScriptExecuteServiceTest {
 	@Autowired
 	JavaScriptExecuteService javaScriptExecuteService;
 
-	@Autowired
-	DockerSandboxService docker;
-
-	private static final String codeSubmit = "function convertToF(celsius) {\n"
-			+ "  var fahrenheit = celsius * 9/5 + 32;\n" + "\n" + "  return fahrenheit;\n" + "}";
+	private static final String codeSubmit = "function convertToF(celsius) { var fahrenheit = celsius * 9/5 + 32;   return fahrenheit;}";
 
 	private CodeSubmit codeSubmitForm;
 
@@ -54,6 +50,7 @@ public class JavaScriptExecuteServiceTest {
 
 	@Test
 	public void testBuildCodeJavaScript() {
+		DockerSandboxService docker = new DockerSandboxService();
 		javaScriptExecuteService.prepare(this.codeSubmitForm);
 		javaScriptExecuteService.runComplier(docker);
 	}

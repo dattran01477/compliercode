@@ -5,11 +5,11 @@ import java.util.Random;
 import org.apache.logging.log4j.util.Strings;
 
 import com.itcode.itcodeweb.data.ComplierEnum;
-import com.itcode.itcodeweb.docker.DockerSandboxService;
 import com.itcode.itcodeweb.model.app.CodeSubmit;
-import com.itcode.itcodeweb.model.app.CodeTemplateModel;
 import com.itcode.itcodeweb.model.docker.DockerSandboxModel;
+import com.itcode.itcodeweb.model.domain.CodeTemplate;
 import com.itcode.itcodeweb.model.respone.CodeResult;
+import com.itcode.itcodeweb.service.docker.DockerSandboxService;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -53,13 +53,14 @@ public abstract class AbstractExecuteService implements IExecuteService {
 	}
 
 	@Override
-	public CodeResult runComplier(DockerSandboxService dockerService) {
-		dockerService.run(this.dockerSandBoxModel);
-		return null;
+	public CodeResult runComplier(DockerSandboxService dockerService, CodeSubmit code) {
+		prepare(code);
+		CodeResult codeResult = dockerService.run(this.dockerSandBoxModel);
+		return processCodeResult(codeResult, this.code);
 	}
 
 	public String buildCode() {
-		CodeTemplateModel template = getTemplateModel(this.code);
+		CodeTemplate template = getTemplateModel(this.code);
 		String code = mergeCodeWithTemplate(template, this.code);
 
 		if (!Strings.isEmpty(code)) {
@@ -70,7 +71,9 @@ public abstract class AbstractExecuteService implements IExecuteService {
 		return null;
 	}
 
-	protected abstract String mergeCodeWithTemplate(CodeTemplateModel template, CodeSubmit codeSubmit);
+	protected abstract CodeResult processCodeResult(CodeResult codeResult, CodeSubmit codeSubmit);
 
-	protected abstract CodeTemplateModel getTemplateModel(CodeSubmit codeSubmit);
+	protected abstract String mergeCodeWithTemplate(CodeTemplate template, CodeSubmit codeSubmit);
+
+	protected abstract CodeTemplate getTemplateModel(CodeSubmit codeSubmit);
 }

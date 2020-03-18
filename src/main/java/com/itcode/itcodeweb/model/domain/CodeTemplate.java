@@ -1,4 +1,8 @@
-package com.itcode.itcodeweb.model.app;
+package com.itcode.itcodeweb.model.domain;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -8,19 +12,22 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class CodeTemplateModel {
+@Document(collection = "code_template")
+public class CodeTemplate {
 
-	private Long id;
+	@Id
+	private String id;
 
+	@Field("name")
 	private String name;
 
-	@NonNull
+	@Field("func_code")
 	private String codeFunction;
 
-	@NonNull
+	@Field("assert_code")
 	private String assertFunction;
 
-	@NonNull
+	@Field("result_code")
 	private String resultFunction;
 
 	public String getTemplate() {

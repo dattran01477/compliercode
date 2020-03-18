@@ -3,32 +3,31 @@ package com.itcode.itcodeweb.service.excute;
 import org.springframework.stereotype.Service;
 
 import com.itcode.itcodeweb.model.app.CodeSubmit;
-import com.itcode.itcodeweb.model.app.CodeTemplateModel;
+import com.itcode.itcodeweb.model.domain.CodeTemplate;
+import com.itcode.itcodeweb.model.respone.CodeResult;
 
 @Service
 public class JavaExecuteService extends AbstractExecuteService {
 
-	private CodeTemplateModel template;
-
 	@Override
 	public void prepare(CodeSubmit code) {
-		buildTemplate();
 		super.prepare(code);
 	}
 
-	private void buildTemplate() {
-		this.template = CodeTemplateModel.builder().id(0l).assertFunction("").assertFunction("").build();
-	}
-
 	@Override
-	protected String mergeCodeWithTemplate(CodeTemplateModel template, CodeSubmit codeSubmit) {
+	protected String mergeCodeWithTemplate(CodeTemplate template, CodeSubmit codeSubmit) {
 		return null;
 	}
 
 	@Override
-	protected CodeTemplateModel getTemplateModel(CodeSubmit codeSubmit) {
+	protected CodeTemplate getTemplateModel(CodeSubmit codeSubmit) {
+		return null;
+	}
+
+	@Override
+	protected CodeResult processCodeResult(CodeResult codeResult, CodeSubmit codeSubmit) {
 		// TODO Auto-generated method stub
-		return template;
+		return null;
 	}
 
 }

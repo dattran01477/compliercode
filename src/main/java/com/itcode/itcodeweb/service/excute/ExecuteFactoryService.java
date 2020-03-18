@@ -9,18 +9,22 @@ import com.itcode.itcodeweb.data.ComplierEnum;
 public class ExecuteFactoryService {
 
 	@Autowired
+
 	JavaScriptExecuteService javascriptExecuteService;
+
+	@Autowired
+	JavaExecuteService javaExecuteService;
 
 	private ExecuteFactoryService() {
 
 	}
 
-	public static final IExecuteService getExcute(ComplierEnum complierType) {
+	public final IExecuteService getExcute(ComplierEnum complierType) {
 		switch (complierType) {
 		case Java:
-			return new JavaExecuteService();
+			return javaExecuteService;
 		case Nodejs:
-			return new JavaScriptExecuteService();
+			return javascriptExecuteService;
 		default:
 			throw new IllegalArgumentException("Not support language");
 		}

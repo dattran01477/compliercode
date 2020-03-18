@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.itcode.itcodeweb.data.ComplierEnum;
-import com.itcode.itcodeweb.docker.DockerSandboxService;
 import com.itcode.itcodeweb.model.docker.DockerSandboxModel;
+import com.itcode.itcodeweb.service.docker.DockerSandboxService;
 
 @SpringBootTest
 class ItcodewebApplicationTests {

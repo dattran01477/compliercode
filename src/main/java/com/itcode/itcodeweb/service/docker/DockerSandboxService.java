@@ -1,11 +1,11 @@
-package com.itcode.itcodeweb.docker;
+package com.itcode.itcodeweb.service.docker;
 
 import java.io.File;
 import java.io.IOException;
 
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
+import org.springframework.scheduling.annotation.Async;
 
+import com.itcode.itcodeweb.model.respone.CodeResult;
 import com.itcode.itcodeweb.utils.FileUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -14,11 +14,9 @@ import lombok.extern.slf4j.Slf4j;
  * @author thanhdat
  *
  */
-@Service
 @Slf4j
 public class DockerSandboxService extends AbstractDockerSandBoxService {
 
-	private static int time = 0;
 	private static final String END_PROCESS_CHAR = "-COMPILEBOX::ENDOFOUTPUT-";
 
 	@Override
@@ -50,7 +48,7 @@ public class DockerSandboxService extends AbstractDockerSandBoxService {
 	}
 
 	@Override
-	public String execute() {
+	public CodeResult execute() {
 		String st = this.dockerSandboxModel.getPath() + "DockerTimeout.sh " + this.dockerSandboxModel.getTimeOutValue()
 				+ "s -u mysql -e \'NODE_PATH=/usr/local/lib/node_modules\' -i -t -v  "
 				+ this.dockerSandboxModel.getPath() + this.dockerSandboxModel.getFolder() + ":/usercode "
@@ -59,42 +57,39 @@ public class DockerSandboxService extends AbstractDockerSandBoxService {
 				+ this.dockerSandboxModel.getOutPutCommand() + " " + this.dockerSandboxModel.getExtraArguments();
 		log.info(st);
 		try {
-			Runtime.getRuntime().exec(st);
-			this.enabledSchedule.set(true);
-		} catch (IOException e) {
+			Runtime.getRuntime().exec(st).waitFor();
+			return scanFileSuccess();
+		} catch (IOException | InterruptedException e) {
 			log.error(e.getMessage());
 		}
-		return null;
+		return new CodeResult();
 	}
 
-	@Scheduled(fixedRate = 1000)
-	public void scanFileSuccess() throws Exception {
-		if (enabledSchedule.get()) {
-			if (time > 10) {
-				this.enabledSchedule.set(false);
-			} else {
+	@Async
+	public CodeResult scanFileSuccess() {
+		CodeResult result = new CodeResult();
 
-				String error = FileUtils
-						.readFile(this.dockerSandboxModel.getPath() + this.dockerSandboxModel.getFolder() + "/errors");
-				if (!error.equals("")) {
-					//FileUtils.removeFile(this.dockerSandboxModel.getPath() + this.dockerSandboxModel.getFolder());
-					this.enabledSchedule.set(false);
-					log.info(error);
-				} else {
-					String result = FileUtils.readFile(
-							this.dockerSandboxModel.getPath() + this.dockerSandboxModel.getFolder() + "/completed")
-							.split(END_PROCESS_CHAR)[0];
-					if (result != null) {
-						//FileUtils.removeFile(this.dockerSandboxModel.getPath() + this.dockerSandboxModel.getFolder());
-						this.enabledSchedule.set(false);
-						log.info(result);
-					} else {
-						time++;
-						log.info("processing");
-					}
-				}
+		// Process get result after complied
+		String error = FileUtils
+				.readFile(this.dockerSandboxModel.getPath() + this.dockerSandboxModel.getFolder() + "/errors");
+		if (!error.equals("")) {
+			FileUtils.removeFile(this.dockerSandboxModel.getPath() + this.dockerSandboxModel.getFolder());
+			log.info(error);
+			result.setError(true);
+			result.setResultCmd(error);
+		} else {
+			String sucess = FileUtils
+					.readFile(this.dockerSandboxModel.getPath() + this.dockerSandboxModel.getFolder() + "/completed")
+					.split(END_PROCESS_CHAR)[0];
+			if (result != null) {
+				FileUtils.removeFile(this.dockerSandboxModel.getPath() + this.dockerSandboxModel.getFolder());
+				log.info(sucess);
+				result.setError(false);
+				result.setResultCmd(sucess);
 			}
 		}
+
+		return result;
 	}
 
 }

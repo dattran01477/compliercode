@@ -1,9 +1,10 @@
-package com.itcode.itcodeweb.docker;
+package com.itcode.itcodeweb.service.docker;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.itcode.itcodeweb.model.docker.DockerSandboxModel;
+import com.itcode.itcodeweb.model.respone.CodeResult;
 
 /**
  * @author thanhdat
@@ -19,7 +20,7 @@ public abstract class AbstractDockerSandBoxService {
 
 	protected Process process;
 
-	public String run(DockerSandboxModel dockerInfo) {
+	public CodeResult run(DockerSandboxModel dockerInfo) {
 		this.dockerSandboxModel = dockerInfo;
 		prepare();
 		return execute();
@@ -27,5 +28,5 @@ public abstract class AbstractDockerSandBoxService {
 
 	public abstract void prepare();
 
-	public abstract String execute();
+	public abstract CodeResult execute();
 }
