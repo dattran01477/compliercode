@@ -52,6 +52,6 @@ public class JavaScriptExecuteServiceTest {
 	public void testBuildCodeJavaScript() {
 		DockerSandboxService docker = new DockerSandboxService();
 		javaScriptExecuteService.prepare(this.codeSubmitForm);
-		javaScriptExecuteService.runComplier(docker);
+		javaScriptExecuteService.runComplier(docker, this.codeSubmitForm);
 	}
 }
