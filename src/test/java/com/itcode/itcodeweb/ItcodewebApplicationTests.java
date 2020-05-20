@@ -33,7 +33,7 @@ class ItcodewebApplicationTests {
 		DockerSandboxModel model = new DockerSandboxModel(timeoutValue, path, folder, vmName,
 				complierForLanguage.getComplierName(), complierForLanguage.getFileName(), code,
 				complierForLanguage.getOutputCommand(), complierForLanguage.getLanguageName(),
-				complierForLanguage.getEArguments(), stdinData);
+				complierForLanguage.getEArguments(), stdinData, "", "");
 		dockerService.run(model);
 	}
 
@@ -53,10 +53,9 @@ class ItcodewebApplicationTests {
 		DockerSandboxModel model = new DockerSandboxModel(timeoutValue, path, folder, vmName,
 				complierForLanguage.getComplierName(), complierForLanguage.getFileName(), code,
 				complierForLanguage.getOutputCommand(), complierForLanguage.getLanguageName(),
-				complierForLanguage.getEArguments(), stdinData);
+				complierForLanguage.getEArguments(), stdinData, "", "");
 		dockerService.run(model);
 
-		
 	}
 
 }

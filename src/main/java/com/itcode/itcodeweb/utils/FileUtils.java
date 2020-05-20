@@ -10,8 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class FileUtils {
-	
-	
+
 	public static void writeFile(String path, String code) {
 		try {
 			createFile(path);
@@ -81,12 +80,13 @@ public class FileUtils {
 		return false;
 	}
 
-	private static void setExcuteableAllFileInFolder(final File folder) {
+	public static void setExcuteableAllFileInFolder(final File folder) {
 		for (final File fileEntry : folder.listFiles()) {
 			if (fileEntry.isDirectory()) {
 				setExcuteableAllFileInFolder(fileEntry);
 			} else {
 				fileEntry.setExecutable(true, false);
+				fileEntry.setReadable(true, false);
 			}
 		}
 	}

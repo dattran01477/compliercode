@@ -14,11 +14,13 @@ com/itcode/itcodeweb/model/app/CodeSubmit.class
 com/itcode/itcodeweb/service/docker/AbstractDockerSandBoxService.class
 com/itcode/itcodeweb/web/TestCaseController.class
 com/itcode/itcodeweb/service/excute/AbstractExecuteService.class
+com/itcode/itcodeweb/config/WebCorsConfig.class
 com/itcode/itcodeweb/model/docker/DockerSandboxModel.class
 com/itcode/itcodeweb/service/excute/JavaExecuteService.class
 com/itcode/itcodeweb/repository/CodeTemplateRepository.class
 com/itcode/itcodeweb/ItcodewebApplication.class
 com/itcode/itcodeweb/model/respone/CodeResult.class
+com/itcode/itcodeweb/utils/RuntimeUtil.class
 com/itcode/itcodeweb/model/domain/CodeTemplate$CodeTemplateBuilder.class
 com/itcode/itcodeweb/model/domain/CodeTemplate.class
 com/itcode/itcodeweb/service/excute/IExecuteService.class

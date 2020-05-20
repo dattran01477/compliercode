@@ -32,7 +32,7 @@ public class JavaScriptExecuteService extends AbstractExecuteService {
 	}
 
 	@Override
-	protected CodeTemplate getTemplateModel(CodeSubmit codeSubmit) {
+	protected CodeTemplate getTemplateCodeModel(CodeSubmit codeSubmit) {
 		return templateService.findTemplateByName("javascript");
 	}
 
@@ -55,5 +55,17 @@ public class JavaScriptExecuteService extends AbstractExecuteService {
 		}
 
 		return codeResultAfterProcess;
+	}
+
+	@Override
+	protected String mergeTestCodeWithTemplate(CodeTemplate template, CodeSubmit codeSubmit) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected CodeTemplate getTemplateTestCodeModel(CodeSubmit codeSubmit) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -27,7 +27,7 @@ public class JavaScriptExecuteServiceTest {
 
 	@BeforeEach
 	public void beforTest() {
-		CodeSubmit codeSubmitFormTmp = new CodeSubmit();
+		CodeSubmit codeSubmitFormTmp = new CodeSubmit(null, null);
 		List<TestCase> lsTestCase = new ArrayList<TestCase>();
 		TestCase test1 = new TestCase("1", "assert(typeof convertToF(0) === 'number')", false);
 		TestCase test2 = new TestCase("1", "assert(convertToF(-30) === -22)", false);

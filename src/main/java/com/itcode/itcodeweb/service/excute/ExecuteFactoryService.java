@@ -9,7 +9,6 @@ import com.itcode.itcodeweb.data.ComplierEnum;
 public class ExecuteFactoryService {
 
 	@Autowired
-
 	JavaScriptExecuteService javascriptExecuteService;
 
 	@Autowired

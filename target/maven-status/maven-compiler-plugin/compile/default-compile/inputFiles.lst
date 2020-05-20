@@ -6,6 +6,7 @@
 /home/thanhdat/Documents/eclipse-ws/docker-online-code/itcodeweb/src/main/java/com/itcode/itcodeweb/service/excute/JavaScriptExecuteService.java
 /home/thanhdat/Documents/eclipse-ws/docker-online-code/itcodeweb/src/main/java/com/itcode/itcodeweb/model/app/Code.java
 /home/thanhdat/Documents/eclipse-ws/docker-online-code/itcodeweb/src/main/java/com/itcode/itcodeweb/config/SwaggerConfig.java
+/home/thanhdat/Documents/eclipse-ws/docker-online-code/itcodeweb/src/main/java/com/itcode/itcodeweb/config/WebCorsConfig.java
 /home/thanhdat/Documents/eclipse-ws/docker-online-code/itcodeweb/src/main/java/com/itcode/itcodeweb/web/TestCaseController.java
 /home/thanhdat/Documents/eclipse-ws/docker-online-code/itcodeweb/src/main/java/com/itcode/itcodeweb/model/app/TestCase.java
 /home/thanhdat/Documents/eclipse-ws/docker-online-code/itcodeweb/src/main/java/com/itcode/itcodeweb/ItcodewebApplication.java
@@ -20,3 +21,4 @@
 /home/thanhdat/Documents/eclipse-ws/docker-online-code/itcodeweb/src/main/java/com/itcode/itcodeweb/service/excute/AbstractExecuteService.java
 /home/thanhdat/Documents/eclipse-ws/docker-online-code/itcodeweb/src/main/java/com/itcode/itcodeweb/utils/FileUtils.java
 /home/thanhdat/Documents/eclipse-ws/docker-online-code/itcodeweb/src/main/java/com/itcode/itcodeweb/data/ComplierEnum.java
+/home/thanhdat/Documents/eclipse-ws/docker-online-code/itcodeweb/src/main/java/com/itcode/itcodeweb/utils/RuntimeUtil.java

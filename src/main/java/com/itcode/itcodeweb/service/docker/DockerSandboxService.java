@@ -3,7 +3,9 @@ package com.itcode.itcodeweb.service.docker;
 import java.io.File;
 import java.io.IOException;
 
-import org.springframework.scheduling.annotation.Async;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.util.StringUtils;
 
 import com.itcode.itcodeweb.model.respone.CodeResult;
 import com.itcode.itcodeweb.utils.FileUtils;
@@ -19,6 +21,9 @@ public class DockerSandboxService extends AbstractDockerSandBoxService {
 
 	private static final String END_PROCESS_CHAR = "-COMPILEBOX::ENDOFOUTPUT-";
 
+	@Autowired
+	Environment env;
+
 	@Override
 	public void prepare() {
 		try {
@@ -32,15 +37,22 @@ public class DockerSandboxService extends AbstractDockerSandBoxService {
 					.exec("chmod +x " + this.dockerSandboxModel.getPath() + this.dockerSandboxModel.getFolder() + "/*");
 
 			// step 2
+			/* create file code */
 			FileUtils.writeFile(this.dockerSandboxModel.getPath() + this.dockerSandboxModel.getFolder() + "/"
 					+ this.dockerSandboxModel.getFileName(), this.dockerSandboxModel.getCode());
-			log.info(this.dockerSandboxModel.getLangName() + " file was saved!");
+			/* Create file test code */
+			if (!StringUtils.isEmpty(this.dockerSandboxModel.getTestCode())) {
+				FileUtils.writeFile(this.dockerSandboxModel.getPath() + this.dockerSandboxModel.getFolder() + "/"
+						+ this.dockerSandboxModel.getTestFileName(), this.dockerSandboxModel.getTestCode());
+			}
+			log.info(this.dockerSandboxModel.getLangName() + " End process file code and file test code!");
 			Runtime.getRuntime().exec("chmod 777 \"" + this.dockerSandboxModel.getPath()
 					+ this.dockerSandboxModel.getFolder() + "/" + this.dockerSandboxModel.getFileName() + "\"");
 
 			// step 3
 			FileUtils.writeFile(this.dockerSandboxModel.getPath() + this.dockerSandboxModel.getFolder() + "/inputFile",
 					this.dockerSandboxModel.getStdinData());
+			FileUtils.setExcuteableAllFileInFolder(destOne);
 			log.info("Input file was saved!");
 		} catch (IOException e) {
 			log.debug(e.getMessage());
@@ -65,7 +77,6 @@ public class DockerSandboxService extends AbstractDockerSandBoxService {
 		return new CodeResult();
 	}
 
-	@Async
 	public CodeResult scanFileSuccess() {
 		CodeResult result = new CodeResult();
 
@@ -73,7 +84,6 @@ public class DockerSandboxService extends AbstractDockerSandBoxService {
 		String error = FileUtils
 				.readFile(this.dockerSandboxModel.getPath() + this.dockerSandboxModel.getFolder() + "/errors");
 		if (!error.equals("")) {
-			FileUtils.removeFile(this.dockerSandboxModel.getPath() + this.dockerSandboxModel.getFolder());
 			log.info(error);
 			result.setError(true);
 			result.setResultCmd(error);
@@ -82,13 +92,13 @@ public class DockerSandboxService extends AbstractDockerSandBoxService {
 					.readFile(this.dockerSandboxModel.getPath() + this.dockerSandboxModel.getFolder() + "/completed")
 					.split(END_PROCESS_CHAR)[0];
 			if (result != null) {
-				FileUtils.removeFile(this.dockerSandboxModel.getPath() + this.dockerSandboxModel.getFolder());
 				log.info(sucess);
 				result.setError(false);
 				result.setResultCmd(sucess);
 			}
 		}
 
+		FileUtils.removeFile(this.dockerSandboxModel.getPath() + this.dockerSandboxModel.getFolder());
 		return result;
 	}
 

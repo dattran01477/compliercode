@@ -3,6 +3,9 @@ package com.itcode.itcodeweb.service.excute;
 import java.util.Random;
 
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.util.StringUtils;
 
 import com.itcode.itcodeweb.data.ComplierEnum;
 import com.itcode.itcodeweb.model.app.CodeSubmit;
@@ -32,24 +35,33 @@ public abstract class AbstractExecuteService implements IExecuteService {
 
 	private CodeSubmit code;
 
+	@Autowired
+	private Environment env;
+
 	public void prepare(CodeSubmit code) {
 		this.setComplierLanguage(code.getCodeSubmit().getLanguage());
 		this.setCode(code);
-		initService(code);
+		initService();
 	}
 
-	public void initService(CodeSubmit codeSubmit) {
+	public void initService() {
 		Random rand = new Random();
 		String folder = FOLDER_BASE_PATH + rand.nextInt(10);
-		String path = BASE_PATH;
+		String path = "";
+		if (StringUtils.isEmpty(env.getProperty("itcode.home"))) {
+			path = BASE_PATH;
+		} else {
+			path = env.getProperty("itcode.home");
+		}
 		String vmName = VM_NAME;
 		Long timeoutValue = TIMEOUT_VALUE;
 
 		String code = buildCode();
+		String testCode = "";
 		dockerSandBoxModel = new DockerSandboxModel(timeoutValue, path, folder, vmName,
 				complierLanguage.getComplierName(), complierLanguage.getFileName(), code,
 				complierLanguage.getOutputCommand(), complierLanguage.getLanguageName(),
-				complierLanguage.getEArguments(), "");
+				complierLanguage.getEArguments(), "", complierLanguage.getTestFileName(), testCode);
 	}
 
 	@Override
@@ -60,7 +72,7 @@ public abstract class AbstractExecuteService implements IExecuteService {
 	}
 
 	public String buildCode() {
-		CodeTemplate template = getTemplateModel(this.code);
+		CodeTemplate template = getTemplateCodeModel(this.code);
 		String code = mergeCodeWithTemplate(template, this.code);
 
 		if (!Strings.isEmpty(code)) {
@@ -68,12 +80,28 @@ public abstract class AbstractExecuteService implements IExecuteService {
 		}
 
 		new Throwable("Can't build code");
-		return null;
+		return "";
+	}
+
+	public String buildTestCode() {
+		CodeTemplate template = getTemplateTestCodeModel(this.code);
+		String code = mergeTestCodeWithTemplate(template, this.code);
+
+		if (!Strings.isEmpty(code)) {
+			return code;
+		}
+
+		new Throwable("Can't build test code");
+		return "";
 	}
 
 	protected abstract CodeResult processCodeResult(CodeResult codeResult, CodeSubmit codeSubmit);
 
 	protected abstract String mergeCodeWithTemplate(CodeTemplate template, CodeSubmit codeSubmit);
 
-	protected abstract CodeTemplate getTemplateModel(CodeSubmit codeSubmit);
+	protected abstract String mergeTestCodeWithTemplate(CodeTemplate template, CodeSubmit codeSubmit);
+
+	protected abstract CodeTemplate getTemplateCodeModel(CodeSubmit codeSubmit);
+
+	protected abstract CodeTemplate getTemplateTestCodeModel(CodeSubmit codeSubmit);
 }
