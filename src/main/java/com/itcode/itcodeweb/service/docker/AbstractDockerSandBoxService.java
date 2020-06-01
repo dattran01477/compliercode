@@ -11,9 +11,9 @@ import com.itcode.itcodeweb.model.respone.CodeResult;
  *
  */
 public abstract class AbstractDockerSandBoxService {
-	
+
 	protected AtomicBoolean enabledSchedule = new AtomicBoolean(false);
-	 
+
 	protected AtomicInteger batchRunCounter = new AtomicInteger(0);
 
 	protected DockerSandboxModel dockerSandboxModel;

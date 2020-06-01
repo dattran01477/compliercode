@@ -48,7 +48,11 @@ if [ "$output" = "" ]; then
     $compiler /usercode/$file -< $"/usercode/inputFile" #| tee /usercode/output.txt
 #Branch 2
 else
+	if [ "$output" = "-rc" ]; then
+    cd usercode ; $compiler #| tee /usercode/output.txt
+	else
 	#In case of compile errors, redirect them to a file
+	echo "$compiler /usercode/$file $addtionalArg"
         $compiler /usercode/$file $addtionalArg #&> /usercode/errors.txt
 	#Branch 2a
 	if [ $? -eq 0 ];	then
@@ -58,6 +62,7 @@ else
 	    echo "Compilation Failed"
 	    #if compilation fails, display the output file	
 	    #cat /usercode/errors.txt
+	fi
 	fi
 fi
 

@@ -8,7 +8,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
 
 import com.itcode.itcodeweb.data.ComplierEnum;
-import com.itcode.itcodeweb.model.app.CodeSubmit;
+import com.itcode.itcodeweb.model.app.CodeAndTestCaseSubmit;
 import com.itcode.itcodeweb.model.docker.DockerSandboxModel;
 import com.itcode.itcodeweb.model.domain.CodeTemplate;
 import com.itcode.itcodeweb.model.respone.CodeResult;
@@ -19,13 +19,13 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public abstract class AbstractExecuteService implements IExecuteService {
+public abstract class AbstractExecuteCodeAndTestService implements IExecuteService<CodeAndTestCaseSubmit> {
 
 	private static final String FOLDER_BASE_PATH = "temp/";
 
 	private static final String BASE_PATH = System.getProperty("user.dir") + "/";
 
-	private static final String VM_NAME = "virtual_machine";
+	private static final String VM_NAME = "virtual_machine8";
 
 	private static final Long TIMEOUT_VALUE = 20l;
 
@@ -33,13 +33,13 @@ public abstract class AbstractExecuteService implements IExecuteService {
 
 	private DockerSandboxModel dockerSandBoxModel;
 
-	private CodeSubmit code;
+	private CodeAndTestCaseSubmit code;
 
 	@Autowired
 	private Environment env;
 
-	public void prepare(CodeSubmit code) {
-		this.setComplierLanguage(code.getCodeSubmit().getLanguage());
+	public void prepare(CodeAndTestCaseSubmit code) {
+		this.setComplierLanguage(code.getLanguage());
 		this.setCode(code);
 		initService();
 	}
@@ -57,7 +57,7 @@ public abstract class AbstractExecuteService implements IExecuteService {
 		Long timeoutValue = TIMEOUT_VALUE;
 
 		String code = buildCode();
-		String testCode = "";
+		String testCode = buildTestCode();
 		dockerSandBoxModel = new DockerSandboxModel(timeoutValue, path, folder, vmName,
 				complierLanguage.getComplierName(), complierLanguage.getFileName(), code,
 				complierLanguage.getOutputCommand(), complierLanguage.getLanguageName(),
@@ -65,15 +65,14 @@ public abstract class AbstractExecuteService implements IExecuteService {
 	}
 
 	@Override
-	public CodeResult runComplier(DockerSandboxService dockerService, CodeSubmit code) {
+	public CodeResult runComplier(DockerSandboxService dockerService, CodeAndTestCaseSubmit code) {
 		prepare(code);
 		CodeResult codeResult = dockerService.run(this.dockerSandBoxModel);
 		return processCodeResult(codeResult, this.code);
 	}
 
 	public String buildCode() {
-		CodeTemplate template = getTemplateCodeModel(this.code);
-		String code = mergeCodeWithTemplate(template, this.code);
+		String code = mergeCodeWithTemplate(null, this.code);
 
 		if (!Strings.isEmpty(code)) {
 			return code;
@@ -84,8 +83,7 @@ public abstract class AbstractExecuteService implements IExecuteService {
 	}
 
 	public String buildTestCode() {
-		CodeTemplate template = getTemplateTestCodeModel(this.code);
-		String code = mergeTestCodeWithTemplate(template, this.code);
+		String code = mergeTestCodeWithTemplate(null, this.code);
 
 		if (!Strings.isEmpty(code)) {
 			return code;
@@ -95,13 +93,9 @@ public abstract class AbstractExecuteService implements IExecuteService {
 		return "";
 	}
 
-	protected abstract CodeResult processCodeResult(CodeResult codeResult, CodeSubmit codeSubmit);
+	protected abstract CodeResult processCodeResult(CodeResult codeResult, CodeAndTestCaseSubmit codeSubmit);
 
-	protected abstract String mergeCodeWithTemplate(CodeTemplate template, CodeSubmit codeSubmit);
+	protected abstract String mergeCodeWithTemplate(CodeTemplate template, CodeAndTestCaseSubmit codeSubmit);
 
-	protected abstract String mergeTestCodeWithTemplate(CodeTemplate template, CodeSubmit codeSubmit);
-
-	protected abstract CodeTemplate getTemplateCodeModel(CodeSubmit codeSubmit);
-
-	protected abstract CodeTemplate getTemplateTestCodeModel(CodeSubmit codeSubmit);
+	protected abstract String mergeTestCodeWithTemplate(CodeTemplate template, CodeAndTestCaseSubmit codeSubmit);
 }

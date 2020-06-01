@@ -1,6 +1,6 @@
 package com.itcode.itcodeweb.model.app;
 
-import java.util.List;
+import com.itcode.itcodeweb.data.ComplierEnum;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 public class CodeSubmit {
-	private Code codeSubmit;
+	protected Code codeSubmit;
 	
-	private List<TestCase> testCase;
+	protected ComplierEnum language;
 }

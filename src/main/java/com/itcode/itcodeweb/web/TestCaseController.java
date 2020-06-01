@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.itcode.itcodeweb.data.ComplierEnum;
-import com.itcode.itcodeweb.model.app.CodeSubmit;
+import com.itcode.itcodeweb.model.app.CodeAndTestCaseSubmit;
 import com.itcode.itcodeweb.model.respone.CodeResult;
 import com.itcode.itcodeweb.service.docker.DockerSandboxService;
 import com.itcode.itcodeweb.service.excute.ExecuteFactoryService;
@@ -21,9 +21,9 @@ public class TestCaseController {
 	ExecuteFactoryService complierFactory;
 
 	@PostMapping
-	public CodeResult runTest(@RequestBody CodeSubmit codeSubmit) {
-		ComplierEnum complierEnumForLanguage = codeSubmit.getCodeSubmit().getLanguage();
-		IExecuteService complier = complierFactory.getExcute(complierEnumForLanguage);
+	public CodeResult runTest(@RequestBody CodeAndTestCaseSubmit codeSubmit) {
+		ComplierEnum complierEnumForLanguage = codeSubmit.getLanguage();
+		IExecuteService<CodeAndTestCaseSubmit> complier = complierFactory.getExcute(complierEnumForLanguage);
 		DockerSandboxService service = new DockerSandboxService();
 		CodeResult result = complier.runComplier(service, codeSubmit);
 		return result;

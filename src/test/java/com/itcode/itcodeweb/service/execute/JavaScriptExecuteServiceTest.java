@@ -1,8 +1,5 @@
 package com.itcode.itcodeweb.service.execute;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,48 +7,43 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.itcode.itcodeweb.data.ComplierEnum;
 import com.itcode.itcodeweb.model.app.Code;
-import com.itcode.itcodeweb.model.app.CodeSubmit;
-import com.itcode.itcodeweb.model.app.TestCase;
+import com.itcode.itcodeweb.model.app.CodeAndTestCaseSubmit;
+import com.itcode.itcodeweb.model.respone.CodeResult;
 import com.itcode.itcodeweb.service.docker.DockerSandboxService;
+import com.itcode.itcodeweb.service.excute.ExecuteFactoryService;
+import com.itcode.itcodeweb.service.excute.IExecuteService;
 import com.itcode.itcodeweb.service.excute.JavaScriptExecuteService;
 
 @SpringBootTest
 public class JavaScriptExecuteServiceTest {
+	
 
 	@Autowired
 	JavaScriptExecuteService javaScriptExecuteService;
 
-	private static final String codeSubmit = "function convertToF(celsius) { var fahrenheit = celsius * 9/5 + 32;   return fahrenheit;}";
+	private static final String codeSubmit = "var assert = require('assert');\n"
+			+ "const AssertionError = require('assert').AssertionError;\n" + "function convertToF(celsius) {\n"
+			+ "    let fahrenheit = celsius * 9 / 5 + 32;\n" + "    return \"fahrenheit\";\n" + "}\n" + "try {\n"
+			+ "    assert.strictEqual(typeof convertToF(0) === 'number',true, new AssertionError({expected: \"convertToF(0)</code> should return a number\"}));\n"
+			+ "} catch (err) {\n" + "    console.log(JSON.stringify(err));\n" + "}";
 
-	private CodeSubmit codeSubmitForm;
+	@Autowired
+	ExecuteFactoryService executeFactoryService;
+
+	private CodeAndTestCaseSubmit codeAndTestSubmit;
 
 	@BeforeEach
 	public void beforTest() {
-		CodeSubmit codeSubmitFormTmp = new CodeSubmit(null, null);
-		List<TestCase> lsTestCase = new ArrayList<TestCase>();
-		TestCase test1 = new TestCase("1", "assert(typeof convertToF(0) === 'number')", false);
-		TestCase test2 = new TestCase("1", "assert(convertToF(-30) === -22)", false);
-		TestCase test3 = new TestCase("1", "assert(convertToF(-10) === 14)", false);
-		TestCase test4 = new TestCase("1", "assert(convertToF(0) === 32)", false);
-		TestCase test5 = new TestCase("1", "assert(convertToF(20) === 68)", false);
-
-		lsTestCase.add(test1);
-		lsTestCase.add(test2);
-		lsTestCase.add(test3);
-		lsTestCase.add(test4);
-		lsTestCase.add(test5);
-
-		codeSubmitFormTmp.setTestCase(lsTestCase);
-
-		Code code = new Code(ComplierEnum.valueOf("Nodejs"), false, codeSubmit);
-		codeSubmitFormTmp.setCodeSubmit(code);
-		codeSubmitForm = codeSubmitFormTmp;
+		ComplierEnum complierEnumForLanguage = ComplierEnum.NodejsTest;
+		Code code = new Code(null, false, codeSubmit);
+		codeAndTestSubmit = new CodeAndTestCaseSubmit(code, complierEnumForLanguage, null);
 	}
 
 	@Test
 	public void testBuildCodeJavaScript() {
-		DockerSandboxService docker = new DockerSandboxService();
-		javaScriptExecuteService.prepare(this.codeSubmitForm);
-		javaScriptExecuteService.runComplier(docker, this.codeSubmitForm);
+		ComplierEnum complierEnumForLanguage = codeAndTestSubmit.getLanguage();
+		IExecuteService<CodeAndTestCaseSubmit> complier = executeFactoryService.getExcute(complierEnumForLanguage);
+		DockerSandboxService service = new DockerSandboxService();
+		CodeResult result = complier.runComplier(service, codeAndTestSubmit);
 	}
 }

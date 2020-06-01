@@ -1,46 +1,14 @@
 package com.itcode.itcodeweb.model.respone;
 
-import java.util.List;
-
-import com.itcode.itcodeweb.data.CodeResultStatus;
-import com.itcode.itcodeweb.model.app.TestCase;
-
 import lombok.Getter;
 import lombok.Setter;
 
+@Setter
+@Getter
 public class CodeResult {
+	private Double duration;
 
-	@Setter
-	@Getter
-	private Boolean error;
+	private ErrorMessage errorMessage = new ErrorMessage();
 
-	@Getter
-	@Setter
-	private List<TestCase> infoTestCase;
-
-	@Getter
-	@Setter
-	private String resultCmd;
-
-	@Setter
-	private CodeResultStatus status;
-
-	public CodeResultStatus getStatus() {
-		Boolean isSucess = true;
-		if (infoTestCase != null & !infoTestCase.isEmpty()) {
-			for (TestCase test : infoTestCase) {
-				if (test.getIsPassed() == false) {
-					isSucess = false;
-				}
-			}
-		} else {
-			isSucess = false;
-		}
-
-		if (isSucess) {
-			return CodeResultStatus.SUCCESS;
-		}
-
-		return CodeResultStatus.FAIL;
-	}
+	private SuccessMessage successMessage = new SuccessMessage();
 }

@@ -2,6 +2,7 @@ package com.itcode.itcodeweb.service.docker;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -20,6 +21,10 @@ import lombok.extern.slf4j.Slf4j;
 public class DockerSandboxService extends AbstractDockerSandBoxService {
 
 	private static final String END_PROCESS_CHAR = "-COMPILEBOX::ENDOFOUTPUT-";
+
+	private static final String ERROR_FILE_NAME = "errors";
+
+	private static final String SUSSCESS_FILE_NAME = "completed";
 
 	@Autowired
 	Environment env;
@@ -61,15 +66,27 @@ public class DockerSandboxService extends AbstractDockerSandBoxService {
 
 	@Override
 	public CodeResult execute() {
-		String st = this.dockerSandboxModel.getPath() + "DockerTimeout.sh " + this.dockerSandboxModel.getTimeOutValue()
-				+ "s -u mysql -e \'NODE_PATH=/usr/local/lib/node_modules\' -i -t -v  "
+		String stLogCommand = this.dockerSandboxModel.getPath() + "DockerTimeout.sh "
+				+ this.dockerSandboxModel.getTimeOutValue()
+				+ "s -u root -e \'NODE_PATH=/usr/local/lib/node_modules\' -i -t -v  "
 				+ this.dockerSandboxModel.getPath() + this.dockerSandboxModel.getFolder() + ":/usercode "
-				+ this.dockerSandboxModel.getVmName() + " /usercode/script.sh "
-				+ this.dockerSandboxModel.getComplierName() + " " + this.dockerSandboxModel.getFileName() + " "
+				+ this.dockerSandboxModel.getVmName() + " /usercode/script.sh " + "\""
+				+ this.dockerSandboxModel.getComplierName() + "\"" + " " + this.dockerSandboxModel.getFileName() + " "
 				+ this.dockerSandboxModel.getOutPutCommand() + " " + this.dockerSandboxModel.getExtraArguments();
-		log.info(st);
+
+		String[] stArray = { this.dockerSandboxModel.getPath() + "DockerTimeout.sh",
+				this.dockerSandboxModel.getTimeOutValue() + "s", "-u", "root", "-e",
+				"NODE_PATH=/usr/local/lib/node_modules", "-i", "-t", "-v",
+				this.dockerSandboxModel.getPath() + this.dockerSandboxModel.getFolder() + ":/usercode",
+				this.dockerSandboxModel.getVmName(), "/usercode/script.sh", this.dockerSandboxModel.getComplierName(),
+				this.dockerSandboxModel.getFileName(), this.dockerSandboxModel.getOutPutCommand(),
+				this.dockerSandboxModel.getExtraArguments() };
+
+		log.info(stLogCommand);
 		try {
-			Runtime.getRuntime().exec(st).waitFor();
+			log.info("Start time excute: " + LocalDateTime.now().getSecond());
+			Runtime.getRuntime().exec(stArray).waitFor();
+			log.info("End time excute: " + LocalDateTime.now().getSecond());
 			return scanFileSuccess();
 		} catch (IOException | InterruptedException e) {
 			log.error(e.getMessage());
@@ -80,22 +97,21 @@ public class DockerSandboxService extends AbstractDockerSandBoxService {
 	public CodeResult scanFileSuccess() {
 		CodeResult result = new CodeResult();
 
-		// Process get result after complied
-		String error = FileUtils
-				.readFile(this.dockerSandboxModel.getPath() + this.dockerSandboxModel.getFolder() + "/errors");
-		if (!error.equals("")) {
+		// Process error
+		String error = FileUtils.readFile(
+				this.dockerSandboxModel.getPath() + this.dockerSandboxModel.getFolder() + "/" + ERROR_FILE_NAME);
+		if (!error.isEmpty()) {
 			log.info(error);
-			result.setError(true);
-			result.setResultCmd(error);
-		} else {
-			String sucess = FileUtils
-					.readFile(this.dockerSandboxModel.getPath() + this.dockerSandboxModel.getFolder() + "/completed")
-					.split(END_PROCESS_CHAR)[0];
-			if (result != null) {
-				log.info(sucess);
-				result.setError(false);
-				result.setResultCmd(sucess);
-			}
+			result.getErrorMessage().setErrorComplieMessage(error);
+		}
+
+		// Process sucess
+		String sucess = FileUtils.readFile(
+				this.dockerSandboxModel.getPath() + this.dockerSandboxModel.getFolder() + "/" + SUSSCESS_FILE_NAME)
+				.split(END_PROCESS_CHAR)[0];
+		if (!sucess.isEmpty()) {
+			log.info(sucess);
+			result.getSuccessMessage().setSuccessComplieMessage(sucess);
 		}
 
 		FileUtils.removeFile(this.dockerSandboxModel.getPath() + this.dockerSandboxModel.getFolder());
