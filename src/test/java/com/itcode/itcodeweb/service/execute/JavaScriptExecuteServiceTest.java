@@ -36,7 +36,7 @@ public class JavaScriptExecuteServiceTest {
 	public void beforTest() {
 		ComplierEnum complierEnumForLanguage = ComplierEnum.NodejsTest;
 		Code code = new Code(null, false, codeSubmit);
-		codeAndTestSubmit = new CodeAndTestCaseSubmit(code, complierEnumForLanguage, null);
+		codeAndTestSubmit = new CodeAndTestCaseSubmit(code, complierEnumForLanguage, null,"");
 	}
 
 	@Test

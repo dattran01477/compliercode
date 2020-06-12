@@ -101,7 +101,7 @@ public class DockerSandboxService extends AbstractDockerSandBoxService {
 		String error = FileUtils.readFile(
 				this.dockerSandboxModel.getPath() + this.dockerSandboxModel.getFolder() + "/" + ERROR_FILE_NAME);
 		if (!error.isEmpty()) {
-			log.info(error);
+			log.info("error: "+error);
 			result.getErrorMessage().setErrorComplieMessage(error);
 		}
 
@@ -110,11 +110,11 @@ public class DockerSandboxService extends AbstractDockerSandBoxService {
 				this.dockerSandboxModel.getPath() + this.dockerSandboxModel.getFolder() + "/" + SUSSCESS_FILE_NAME)
 				.split(END_PROCESS_CHAR)[0];
 		if (!sucess.isEmpty()) {
-			log.info(sucess);
+			log.info("sucess: "+sucess);
 			result.getSuccessMessage().setSuccessComplieMessage(sucess);
 		}
 
-		FileUtils.removeFile(this.dockerSandboxModel.getPath() + this.dockerSandboxModel.getFolder());
+		//FileUtils.removeFile(this.dockerSandboxModel.getPath() + this.dockerSandboxModel.getFolder());
 		return result;
 	}
 

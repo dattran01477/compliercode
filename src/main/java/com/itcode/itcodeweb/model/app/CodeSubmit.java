@@ -11,6 +11,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class CodeSubmit {
 	protected Code codeSubmit;
-	
+
 	protected ComplierEnum language;
+
+	protected String languageVersion;
 }

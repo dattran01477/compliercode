@@ -49,7 +49,7 @@ if [ "$output" = "" ]; then
 #Branch 2
 else
 	if [ "$output" = "-rc" ]; then
-    cd usercode ; $compiler #| tee /usercode/output.txt
+    cd usercode ; $compiler  #| tee /usercode/output.txt
 	else
 	#In case of compile errors, redirect them to a file
 	echo "$compiler /usercode/$file $addtionalArg"

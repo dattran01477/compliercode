@@ -25,9 +25,11 @@ public abstract class AbstractExecuteCodeAndTestService implements IExecuteServi
 
 	private static final String BASE_PATH = System.getProperty("user.dir") + "/";
 
-	private static final String VM_NAME = "virtual_machine8";
+	private static final String VM_NAME = "virtual.name";
 
 	private static final Long TIMEOUT_VALUE = 20l;
+
+	private static final String APP_HOME = "itcode.home";
 
 	private ComplierEnum complierLanguage;
 
@@ -48,12 +50,13 @@ public abstract class AbstractExecuteCodeAndTestService implements IExecuteServi
 		Random rand = new Random();
 		String folder = FOLDER_BASE_PATH + rand.nextInt(10);
 		String path = "";
-		if (StringUtils.isEmpty(env.getProperty("itcode.home"))) {
+		if (StringUtils.isEmpty(env.getProperty(APP_HOME))) {
 			path = BASE_PATH;
 		} else {
-			path = env.getProperty("itcode.home");
+			path = env.getProperty(APP_HOME);
 		}
-		String vmName = VM_NAME;
+		
+		String vmName =env.getProperty(VM_NAME)!= null?env.getProperty(VM_NAME):"" ;
 		Long timeoutValue = TIMEOUT_VALUE;
 
 		String code = buildCode();

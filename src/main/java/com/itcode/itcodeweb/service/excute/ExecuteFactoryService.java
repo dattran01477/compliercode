@@ -15,6 +15,9 @@ public class ExecuteFactoryService {
 	@Autowired
 	JavaExecuteService javaExecuteService;
 
+	@Autowired
+	PythonExecuteService pythonExecuteService;
+
 	private ExecuteFactoryService() {
 
 	}
@@ -29,6 +32,8 @@ public class ExecuteFactoryService {
 			return javascriptExecuteService;
 		case NodejsTest:
 			return javascriptExecuteService;
+		case Python2:
+			return pythonExecuteService;
 		default:
 			throw new IllegalArgumentException("Not support language");
 		}
