@@ -114,7 +114,7 @@ public class DockerSandboxService extends AbstractDockerSandBoxService {
 			result.getSuccessMessage().setSuccessComplieMessage(sucess);
 		}
 
-		//FileUtils.removeFile(this.dockerSandboxModel.getPath() + this.dockerSandboxModel.getFolder());
+		FileUtils.removeFile(this.dockerSandboxModel.getPath() + this.dockerSandboxModel.getFolder());
 		return result;
 	}
 
