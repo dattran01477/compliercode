@@ -10,7 +10,7 @@ public enum ComplierEnum {
 	// outputcommand 
 	// -rc run only first param
 
-	Python2("python -m unittest file", "file.py", "-rc", "Python", "",""),//
+	Python2("python -m unittest -v file", "file.py", "-rc", "Python", "",""),//
 	Python("python", "file.py", "", "Python", "",""), //
 	Ruby("ruby", "file.rb", "", "Ruby", "",""), //
 	Clojure("clojure", "file.clj", "", "Clojure", "",""), //

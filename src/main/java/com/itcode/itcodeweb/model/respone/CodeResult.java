@@ -1,5 +1,10 @@
 package com.itcode.itcodeweb.model.respone;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.itcode.itcodeweb.model.app.TestCase;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,4 +22,6 @@ public class CodeResult {
 	private String stdout;
 	
 	private String sterr;
+	
+	private List<TestCase> testCasesResult=new ArrayList<TestCase>();
 }

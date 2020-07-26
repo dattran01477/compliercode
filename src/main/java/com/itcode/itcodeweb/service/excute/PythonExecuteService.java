@@ -1,9 +1,15 @@
 package com.itcode.itcodeweb.service.excute;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.itcode.itcodeweb.model.app.CodeAndTestCaseSubmit;
+import com.itcode.itcodeweb.model.app.TestCase;
 import com.itcode.itcodeweb.model.domain.CodeTemplate;
 import com.itcode.itcodeweb.model.respone.CodeResult;
 
@@ -30,6 +36,26 @@ public class PythonExecuteService extends AbstractExecuteCodeAndTestService {
 					.setSuccessComplieMessage(codeResult.getErrorMessage().getErrorComplieMessage());
 			codeResult.getErrorMessage().setErrorComplieMessage(null);
 		}
+
+		// Process output
+		String regexCheckFailed = "(?<=\\s\\{\\{\\%)(.*?)(?=\\%\\}\\})";
+		StringBuilder testCaseResultFailed = new StringBuilder(
+				codeResult.getErrorMessage().getErrorComplieMessage().toString());
+		Pattern patternCheckTestCaseFailed = Pattern.compile(regexCheckFailed);
+		Matcher matcherCheckTestCaseFailed = patternCheckTestCaseFailed.matcher(testCaseResultFailed);
+		while (matcherCheckTestCaseFailed.find()) {
+			codeResult.getTestCasesResult().add(new TestCase("", matcherCheckTestCaseFailed.group(1), false));
+		}
+
+		String regexCheckPassed = "(?<=\\{\\{)(.*?)(?=\\}\\})";
+		StringBuilder testCaseResultPassed = new StringBuilder(
+				codeResult.getSuccessMessage().getSuccessComplieMessage().toString());
+		Pattern patternCheckTestCasePassed = Pattern.compile(regexCheckPassed);
+		Matcher matcherCheckTestCasePassed = patternCheckTestCasePassed.matcher(testCaseResultPassed);
+		while (matcherCheckTestCasePassed.find()) {
+			codeResult.getTestCasesResult().add(new TestCase("", matcherCheckTestCasePassed.group(1), true));
+		}
+
 		return codeResult;
 	}
 

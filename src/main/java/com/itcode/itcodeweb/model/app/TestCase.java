@@ -8,6 +8,11 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class TestCase {
+	
+	public TestCase() {
+		
+	}
+	
 	private String descrition;
 	
 	private String code;
