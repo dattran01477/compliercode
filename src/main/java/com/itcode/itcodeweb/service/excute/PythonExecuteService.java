@@ -38,26 +38,33 @@ public class PythonExecuteService extends AbstractExecuteCodeAndTestService {
 		}
 
 		// Process output
-		String regexCheckFailed = "(?<=\\s\\{\\{\\%)(.*?)(?=\\%\\}\\})";
-		StringBuilder testCaseResultFailed = new StringBuilder(
-				codeResult.getErrorMessage().getErrorComplieMessage().toString());
-		Pattern patternCheckTestCaseFailed = Pattern.compile(regexCheckFailed);
-		Matcher matcherCheckTestCaseFailed = patternCheckTestCaseFailed.matcher(testCaseResultFailed);
-		while (matcherCheckTestCaseFailed.find()) {
-			codeResult.getTestCasesResult().add(new TestCase("", matcherCheckTestCaseFailed.group(1), false));
+		if(codeResult.getErrorMessage().getErrorComplieMessage()!=null) {
+			String regexCheckFailed = "(?<=\\s\\{\\{\\%)(.*?)(?=\\%\\}\\})";
+			StringBuilder testCaseResultFailed = new StringBuilder(
+					codeResult.getErrorMessage().getErrorComplieMessage().toString());
+			Pattern patternCheckTestCaseFailed = Pattern.compile(regexCheckFailed);
+			Matcher matcherCheckTestCaseFailed = patternCheckTestCaseFailed.matcher(testCaseResultFailed);
+			while (matcherCheckTestCaseFailed.find()) {
+				codeResult.getTestCasesResult().add(new TestCase("", matcherCheckTestCaseFailed.group(1), false));
+			}
 		}
+		
 
-		String regexCheckPassed = "(?<=\\{\\{)(.*?)(?=\\}\\})";
-		StringBuilder testCaseResultPassed = new StringBuilder(
-				codeResult.getSuccessMessage().getSuccessComplieMessage().toString());
-		Pattern patternCheckTestCasePassed = Pattern.compile(regexCheckPassed);
-		Matcher matcherCheckTestCasePassed = patternCheckTestCasePassed.matcher(testCaseResultPassed);
-		while (matcherCheckTestCasePassed.find()) {
-			codeResult.getTestCasesResult().add(new TestCase("", matcherCheckTestCasePassed.group(1), true));
+		if(codeResult.getSuccessMessage().getSuccessComplieMessage()!=null) {
+			String regexCheckPassed = "(?<=\\{\\{)(.*?)(?=\\}\\})";
+			StringBuilder testCaseResultPassed = new StringBuilder(
+					codeResult.getSuccessMessage().getSuccessComplieMessage().toString());
+			Pattern patternCheckTestCasePassed = Pattern.compile(regexCheckPassed);
+			Matcher matcherCheckTestCasePassed = patternCheckTestCasePassed.matcher(testCaseResultPassed);
+			while (matcherCheckTestCasePassed.find()) {
+				codeResult.getTestCasesResult().add(new TestCase("", matcherCheckTestCasePassed.group(1), true));
+			}
 		}
+		
 
 		return codeResult;
 	}
+	
 
 	@Override
 	protected String mergeTestCodeWithTemplate(CodeTemplate template, CodeAndTestCaseSubmit codeSubmit) {
