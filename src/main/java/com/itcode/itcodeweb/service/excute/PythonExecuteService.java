@@ -31,12 +31,6 @@ public class PythonExecuteService extends AbstractExecuteCodeAndTestService {
 
 	@Override
 	protected CodeResult processCodeResult(CodeResult codeResult, CodeAndTestCaseSubmit codeSubmit) {
-		if (codeResult.getErrorMessage().getErrorComplieMessage().endsWith("OK")) {
-			codeResult.getSuccessMessage()
-					.setSuccessComplieMessage(codeResult.getErrorMessage().getErrorComplieMessage());
-			codeResult.getErrorMessage().setErrorComplieMessage(null);
-		}
-
 		// Process output
 		if(codeResult.getErrorMessage().getErrorComplieMessage()!=null) {
 			String regexCheckFailed = "(?<=\\s\\{\\{\\%)(.*?)(?=\\%\\}\\})";
