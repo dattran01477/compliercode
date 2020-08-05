@@ -55,6 +55,12 @@ public class PythonExecuteService extends AbstractExecuteCodeAndTestService {
 			}
 		}
 		
+		if (codeResult.getErrorMessage().getErrorComplieMessage().endsWith("OK")) {
+			codeResult.getSuccessMessage()
+					.setSuccessComplieMessage(codeResult.getErrorMessage().getErrorComplieMessage());
+			codeResult.getErrorMessage().setErrorComplieMessage(null);
+		}
+		
 
 		return codeResult;
 	}
